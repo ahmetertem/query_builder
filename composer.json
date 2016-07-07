@@ -3,14 +3,14 @@
     "type" : "library",
     "description": "PHP Query Builder Class",
     "keywords": ["php mysql","pdo","mysql","orm class", "orm"],
-    "homepage": "http://www.ahmetertem.com.tr",
+    "homepage": "http://www.ahmetertem.com",
     "license": "MIT",
     "authors": [
             {
                 "name": "Ahmet Ertem",
                 "email": "amadertem@gmail.com",
-                "homepage": "http://www.ahmetertem.com.tr",
-                "role": "Developer"
+                "homepage": "http://www.ahmetertem.com",
+                "role": "Lead Developer"
             }
         ],
     "require": {
