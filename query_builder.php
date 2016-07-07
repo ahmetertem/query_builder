@@ -71,10 +71,29 @@ class qb
         return $this;
     }
 
-    public function addCondition($field, $value, $operator = "=")
+    public function addCondition($field, $value = null, $operator = "=")
     {
-        $this->_conditions[] = "{$field} {$operator} {$value}";
+        $this->_conditions[] = $this->c($field, $value, $operator);
         return $this;
+    }
+
+    /**
+     * Adds "<strong><em>or</em></strong>" condition to current and condition
+     * array.
+     */
+    public function addOrCondition()
+    {
+        $this->_conditions[] = '(' . implode(' or ', func_get_args()) . ')';
+        return $this;
+    }
+
+    public static function c($field, $value = null, $operator = "=")
+    {
+        if (is_null($value)) {
+            return $field;
+        } else {
+            return "{$field} {$operator} {$value}";
+        }
     }
 
     public function resetReadFields()

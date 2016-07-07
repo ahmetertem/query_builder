@@ -1,0 +1,1 @@
+query_builder (qb) is a query building class for PHP.
