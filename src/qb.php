@@ -1,7 +1,9 @@
 <?php
 
+namespace ahmetertem;
+
 /**
- * Query Builder
+ * Query builder.
  */
 class qb
 {
@@ -21,12 +23,12 @@ class qb
         if (!is_null($table_name)) {
             $this->addTable($table_name);
         }
-        return $this;
     }
 
     public function resetTables()
     {
         $this->_table_names = array();
+
         return true;
     }
 
@@ -34,12 +36,14 @@ class qb
     {
         $this->resetTables();
         $this->addTable($table_name);
+
         return $this;
     }
 
     public function addTable($table_name)
     {
         $this->_table_names[] = $table_name;
+
         return $this;
     }
 
@@ -48,6 +52,7 @@ class qb
         $this->_write_fields = array();
         $this->_write_values = array();
         $this->_write_field_types = array();
+
         return $this;
     }
 
@@ -55,25 +60,28 @@ class qb
      * $type :
      *        - 0 = string
      *        - 1 = integer
-     *        - 2 = raw
+     *        - 2 = raw.
      */
     public function addWrite($field, $value, $type = 0)
     {
         $this->_write_fields[] = $field;
         $this->_write_values[] = $value;
         $this->_write_field_types[] = $type;
+
         return $this;
     }
 
     public function resetConditions()
     {
         $this->_conditions = array();
+
         return $this;
     }
 
-    public function addCondition($field, $value = null, $operator = "=")
+    public function addCondition($field, $value = null, $operator = '=')
     {
         $this->_conditions[] = $this->c($field, $value, $operator);
+
         return $this;
     }
 
@@ -83,11 +91,12 @@ class qb
      */
     public function addOrCondition()
     {
-        $this->_conditions[] = '(' . implode(' or ', func_get_args()) . ')';
+        $this->_conditions[] = '('.implode(' or ', func_get_args()).')';
+
         return $this;
     }
 
-    public static function c($field, $value = null, $operator = "=")
+    public static function c($field, $value = null, $operator = '=')
     {
         if (is_null($value)) {
             return $field;
@@ -99,24 +108,28 @@ class qb
     public function resetReadFields()
     {
         $this->_read_fields = array();
+
         return $this;
     }
 
     public function addReadField($field)
     {
         $this->_read_fields[] = $field;
+
         return $this;
     }
 
     public function addGroupField($field)
     {
         $this->_group_fields[] = $field;
+
         return $this;
     }
 
     public function addOrder($field, $asc = true)
     {
         $this->_order_fields[$field] = array($field, $asc);
+
         return $this;
     }
 
@@ -124,95 +137,98 @@ class qb
     {
         $_read_fields = $this->_read_fields;
         if (count($_read_fields) == 0) {
-            $_read_fields[] = "*";
+            $_read_fields[] = '*';
         }
         $limit = null;
         if ($this->limit > 0) {
-            $limit = " limit " . ($this->limit_offset != -1 ? $this->limit_offset . ", " : null) . $this->limit;
+            $limit = ' limit '.($this->limit_offset != -1 ? $this->limit_offset.', ' : null).$this->limit;
         }
         $group = null;
         if (count($this->_group_fields) > 0) {
-            $group = " group by " . implode(", ", $this->_group_fields) . " ";
+            $group = ' group by '.implode(', ', $this->_group_fields).' ';
         }
         $order = null;
         if (count($this->_order_fields) > 0) {
-            $order = " order by ";
+            $order = ' order by ';
             $i = 0;
             foreach ($this->_order_fields as $of) {
-                $order .= ($i > 0 ? ", " : null);
+                $order .= ($i > 0 ? ', ' : null);
                 if (!is_null($of[1])) {
                     $pos = strpos($of[0], '.');
                     if ($pos !== false) {
                         $t = explode('.', $of[0]);
-                        $t[1] = '`' . $t[1] . '`';
+                        $t[1] = '`'.$t[1].'`';
                         $of[0] = implode('.', $t);
                         $order .= $of[0];
                     } else {
-                        $order .= '`' . $of[0] . '`';
+                        $order .= '`'.$of[0].'`';
                     }
-                    $order .= " " . ($of[1] ? "asc" : "desc");
+                    $order .= ' '.($of[1] ? 'asc' : 'desc');
                 } else {
                     $order .= $of[0];
                 }
-                $i++;
+                ++$i;
             }
         }
-        $string = sprintf('select %1$s from %2$s%3$s%6$s%4$s%5$s', implode(", ", $_read_fields), implode(", ", $this->_table_names), count($this->_conditions) > 0 ? (" where " . implode(" and ", $this->_conditions)) : null, $order, $limit, $group);
+        $string = sprintf('select %1$s from %2$s%3$s%6$s%4$s%5$s', implode(', ', $_read_fields), implode(', ', $this->_table_names), count($this->_conditions) > 0 ? (' where '.implode(' and ', $this->_conditions)) : null, $order, $limit, $group);
+
         return $string;
     }
 
     public function update()
     {
         $updates = array();
-        for ($d = 0, $m = count($this->_write_fields); $d < $m; $d++) {
-            $t = $this->_write_fields[$d] . "=";
+        for ($d = 0, $m = count($this->_write_fields); $d < $m; ++$d) {
+            $t = $this->_write_fields[$d].'=';
             switch ($this->_write_field_types[$d]) {
             case 0:
-              $t .= "'" . $this->_write_values[$d] . "'";
+              $t .= "'".$this->_write_values[$d]."'";
               break;
           default:
               $t .= $this->_write_values[$d];
           }
             $updates[] = $t;
         }
-        $update_fields = implode(", ", $updates);
+        $update_fields = implode(', ', $updates);
         $limit = null;
         if ($this->limit > 0) {
-            $limit = " limit " . ($this->limit_offset != -1 ? $this->limit_offset . ", " : null) . $this->limit;
+            $limit = ' limit '.($this->limit_offset != -1 ? $this->limit_offset.', ' : null).$this->limit;
         }
-        $where = count($this->_conditions) > 0 ? (" where " . implode(" and ", $this->_conditions)) : null;
+        $where = count($this->_conditions) > 0 ? (' where '.implode(' and ', $this->_conditions)) : null;
         $string = sprintf('update %1$s set %2$s %3$s %4$s', $this->_table_names[0], $update_fields, $where, $limit);
+
         return $string;
     }
 
     public function insert()
     {
         $table = $this->_table_names[0];
-        $fields = "`" . implode("`, `", $this->_write_fields) . "`";
-        //$values = "'" . implode("', '", $this->_write_values) . "'";
+        $fields = '`'.implode('`, `', $this->_write_fields).'`';
         $values = array();
-        for ($d = 0, $m = count($this->_write_fields); $d < $m; $d++) {
+        for ($d = 0, $m = count($this->_write_fields); $d < $m; ++$d) {
             switch ($this->_write_field_types[$d]) {
             case 0:
-              $values[] = "'" . $this->_write_values[$d] . "'";
+              $values[] = "'".$this->_write_values[$d]."'";
               break;
             default:
               $values[] = $this->_write_values[$d];
           }
         }
-        $string = sprintf('insert into %1$s (%2$s) values(%3$s)', $table, $fields, implode(", ", $values));
+        $string = sprintf('insert into %1$s (%2$s) values(%3$s)', $table, $fields, implode(', ', $values));
+
         return $string;
     }
 
     public function delete()
     {
         $table = $this->_table_names[0];
-        $where = count($this->_conditions) > 0 ? (" where " . implode(" and ", $this->_conditions)) : null;
+        $where = count($this->_conditions) > 0 ? (' where '.implode(' and ', $this->_conditions)) : null;
         $limit = null;
         if ($this->limit > 0) {
-            $limit = " limit " . ($this->limit_offset != -1 ? $this->limit_offset . ", " : null) . $this->limit;
+            $limit = ' limit '.($this->limit_offset != -1 ? $this->limit_offset.', ' : null).$this->limit;
         }
         $string = sprintf('delete from %1$s %2$s %3$s', $table, $where, $limit);
+
         return $string;
     }
 }
