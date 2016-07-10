@@ -1,1 +1,5 @@
-query_builder (qb) is a query building class for PHP.
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ahmetertem/query_builder/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ahmetertem/query_builder/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/ahmetertem/query_builder/badges/build.png?b=master)](https://scrutinizer-ci.com/g/ahmetertem/query_builder/build-status/master) [![GitHub issues](https://img.shields.io/github/issues/ahmetertem/query_builder.svg)](https://github.com/ahmetertem/query_builder/issues) [![GitHub forks](https://img.shields.io/github/forks/ahmetertem/query_builder.svg)](https://github.com/ahmetertem/query_builder/network) [![GitHub stars](https://img.shields.io/github/stars/ahmetertem/query_builder.svg)](https://github.com/ahmetertem/query_builder/stargazers) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/ahmetertem/query_builder/master/LICENSE)
+
+query_builder (qb) is a SQL query building class for PHP.
+
+Under construction for now. You may check [roadmap](http://ahmetertem.com/query_builder/Roadmap) and [documentation](http://ahmetertem.com/query_builder/).

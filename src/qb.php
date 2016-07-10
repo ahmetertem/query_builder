@@ -17,11 +17,13 @@ class qb
     private $_group_fields = array();
     public $limit = 100;
     public $limit_offset = -1;
+    public static $default_limit = 100;
 
     public function __construct($table_name = null)
     {
+        $this->limit = self::$default_limit;
         if (!is_null($table_name)) {
-            $this->addTable($table_name);
+            $this->table($table_name);
         }
     }
 
@@ -35,12 +37,12 @@ class qb
     public function setTable($table_name)
     {
         $this->resetTables();
-        $this->addTable($table_name);
+        $this->table($table_name);
 
         return $this;
     }
 
-    public function addTable($table_name)
+    public function table($table_name)
     {
         $this->_table_names[] = $table_name;
 
@@ -62,7 +64,7 @@ class qb
      *        - 1 = integer
      *        - 2 = raw.
      */
-    public function addWrite($field, $value, $type = 0)
+    public function set($field, $value, $type = 0)
     {
         $this->_write_fields[] = $field;
         $this->_write_values[] = $value;
@@ -78,7 +80,7 @@ class qb
         return $this;
     }
 
-    public function addCondition($field, $value = null, $operator = '=')
+    public function and($field, $value = null, $operator = '=')
     {
         $this->_conditions[] = $this->c($field, $value, $operator);
 
@@ -89,7 +91,7 @@ class qb
      * Adds "<strong><em>or</em></strong>" condition to current and condition
      * array.
      */
-    public function addOrCondition()
+    public function or()
     {
         $this->_conditions[] = '('.implode(' or ', func_get_args()).')';
 
@@ -112,28 +114,28 @@ class qb
         return $this;
     }
 
-    public function addReadField($field)
+    public function select($field)
     {
         $this->_read_fields[] = $field;
 
         return $this;
     }
 
-    public function addGroupField($field)
+    public function groupBy($field)
     {
         $this->_group_fields[] = $field;
 
         return $this;
     }
 
-    public function addOrder($field, $asc = true)
+    public function orderBy($field, $asc = true)
     {
         $this->_order_fields[$field] = array($field, $asc);
 
         return $this;
     }
 
-    public function select()
+    public function getSelect()
     {
         $_read_fields = $this->_read_fields;
         if (count($_read_fields) == 0) {
@@ -175,7 +177,7 @@ class qb
         return $string;
     }
 
-    public function update()
+    public function getUpdate()
     {
         $updates = array();
         for ($d = 0, $m = count($this->_write_fields); $d < $m; ++$d) {
@@ -200,7 +202,7 @@ class qb
         return $string;
     }
 
-    public function insert()
+    public function getInsert()
     {
         $table = $this->_table_names[0];
         $fields = '`'.implode('`, `', $this->_write_fields).'`';
@@ -219,7 +221,7 @@ class qb
         return $string;
     }
 
-    public function delete()
+    public function getDelete()
     {
         $table = $this->_table_names[0];
         $where = count($this->_conditions) > 0 ? (' where '.implode(' and ', $this->_conditions)) : null;
