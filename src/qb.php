@@ -80,7 +80,7 @@ class qb
         return $this;
     }
 
-    public function and($field, $value = null, $operator = '=')
+    public function where($field, $value = null, $operator = '=')
     {
         $this->_conditions[] = $this->c($field, $value, $operator);
 
@@ -91,7 +91,7 @@ class qb
      * Adds "<strong><em>or</em></strong>" condition to current and condition
      * array.
      */
-    public function or()
+    public function whereOr()
     {
         $this->_conditions[] = '('.implode(' or ', func_get_args()).')';
 
