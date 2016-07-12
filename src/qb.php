@@ -132,11 +132,21 @@ class qb
         return $this;
     }
 
+    public function setLimit($limit, $limit_offset = -1)
+    {
+        $this->limit = $limit;
+        if ($limit_offset != -1) {
+            $this->limit_offset = $limit_offset;
+        }
+
+        return $this;
+    }
+
     public function getSelect()
     {
-		if(count($this->_table_names) == 0) {
-			throw new exception('Specify at least 1 table name');
-		}
+        if (count($this->_table_names) == 0) {
+            throw new \Exception('Specify at least 1 table name');
+        }
         $_read_fields = $this->_read_fields;
         if (count($_read_fields) == 0) {
             $_read_fields[] = '*';
@@ -179,12 +189,12 @@ class qb
 
     public function getUpdate()
     {
-		if(count($this->_table_names) == 0) {
-			throw new exception('Specify at least 1 table name');
-		}
-		if(count($this->_write_fields) == 0) {
-			throw new exception('Specify at least 1 write field (set function)');
-		}
+        if (count($this->_table_names) == 0) {
+            throw new \Exception('Specify at least 1 table name');
+        }
+        if (count($this->_write_fields) == 0) {
+            throw new \Exception('Specify at least 1 write field (set function)');
+        }
         $updates = array();
         for ($d = 0, $m = count($this->_write_fields); $d < $m; ++$d) {
             $t = $this->_write_fields[$d].'=';
@@ -210,12 +220,12 @@ class qb
 
     public function getInsert()
     {
-		if(count($this->_table_names) == 0) {
-			throw new exception('Specify at least 1 table name');
-		}
-		if(count($this->_write_fields) == 0) {
-			throw new exception('Specify at least 1 write field (set function)');
-		}
+        if (count($this->_table_names) == 0) {
+            throw new \Exception('Specify at least 1 table name');
+        }
+        if (count($this->_write_fields) == 0) {
+            throw new \Exception('Specify at least 1 write field (set function)');
+        }
         $table = $this->_table_names[0];
         $fields = '`'.implode('`, `', $this->_write_fields).'`';
         $values = array();
@@ -235,9 +245,9 @@ class qb
 
     public function getDelete()
     {
-		if(count($this->_table_names) == 0) {
-			throw new exception('Specify at least 1 table name');
-		}
+        if (count($this->_table_names) == 0) {
+            throw new \Exception('Specify at least 1 table name');
+        }
         $table = $this->_table_names[0];
         $where = count($this->_conditions) > 0 ? (' where '.implode(' and ', $this->_conditions)) : null;
         $limit = null;
