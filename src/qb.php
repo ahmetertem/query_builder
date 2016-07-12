@@ -15,6 +15,7 @@ class qb
     private $_write_field_types = array();
     private $_order_fields = array();
     private $_group_fields = array();
+    private $_joins = array();
     public $limit = 100;
     public $limit_offset = -1;
     public static $default_limit = 100;
@@ -142,23 +143,54 @@ class qb
         return $this;
     }
 
+    public function join($table_name, $on, $join_type = null)
+    {
+        $this->_joins[] = array('table' => $table_name, 'on' => $on, 'type' => $join_type);
+
+        return $this;
+    }
+
     public function getSelect()
     {
         if (count($this->_table_names) == 0) {
             throw new \Exception('Specify at least 1 table name');
         }
+
+        //
+        // selects
+        //
         $_read_fields = $this->_read_fields;
         if (count($_read_fields) == 0) {
             $_read_fields[] = '*';
         }
+
+        //
+        // joins
+        //
+        $joins = null;
+        foreach ($this->_joins as $join) {
+            $joins .= $join['type'].' JOIN '.$join['table'].' on '.$join['on'].' ';
+        }
+
+        //
+        // limits
+        //
         $limit = null;
         if ($this->limit > 0) {
             $limit = ' limit '.($this->limit_offset != -1 ? $this->limit_offset.', ' : null).$this->limit;
         }
+
+        //
+        // group bys
+        //
         $group = null;
         if (count($this->_group_fields) > 0) {
             $group = ' group by '.implode(', ', $this->_group_fields).' ';
         }
+
+        //
+        // order bys
+        //
         $order = null;
         if (count($this->_order_fields) > 0) {
             $order = ' order by ';
@@ -182,7 +214,7 @@ class qb
                 ++$i;
             }
         }
-        $string = sprintf('select %1$s from %2$s%3$s%6$s%4$s%5$s', implode(', ', $_read_fields), implode(', ', $this->_table_names), count($this->_conditions) > 0 ? (' where '.implode(' and ', $this->_conditions)) : null, $order, $limit, $group);
+        $string = sprintf('select %1$s from %2$s%7$s%3$s%6$s%4$s%5$s', implode(', ', $_read_fields), implode(', ', $this->_table_names), count($this->_conditions) > 0 ? (' where '.implode(' and ', $this->_conditions)) : null, $order, $limit, $group, $joins);
 
         return $string;
     }
