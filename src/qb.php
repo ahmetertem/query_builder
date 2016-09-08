@@ -229,7 +229,7 @@ class qb
         }
         $updates = array();
         for ($d = 0, $m = count($this->_write_fields); $d < $m; ++$d) {
-            $t = $this->_write_fields[$d].'=';
+            $t = '`' . $this->_write_fields[$d].'`=';
             switch ($this->_write_field_types[$d]) {
             case 0:
               $t .= "'".$this->_write_values[$d]."'";
