@@ -42,6 +42,9 @@ class qb
 
     public function table($table_name)
     {
+        if ($table_name == null) {
+            return $this->_table_names[0];
+        }
         $this->_table_names[] = $table_name;
 
         return $this;
