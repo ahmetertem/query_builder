@@ -40,8 +40,8 @@ If you do not want to short usage you may use like;
 ```
 $qb = new \ahmetertem\qb();
 ```
+
 > **Not**: If you do not use with `use` keyword ***you must*** enter long namespace each time.
->
 > See: [or](#or) section
 ---
 
