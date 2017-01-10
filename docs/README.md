@@ -42,7 +42,7 @@ $qb = new \ahmetertem\qb();
 ```
 > **Not**: If you do not use with `use` keyword ***you must*** enter long namespace each time.
 >
-> *See: [or](#or)* section
+> See: [or](#or) section
 ---
 
 ## Support
