@@ -7,6 +7,8 @@ namespace ahmetertem;
  */
 class qb
 {
+	const DRIVER_MYSQL = 0;
+
     private $_conditions = array();
     private $_table_names = array();
     private $_read_fields = array();
@@ -18,6 +20,8 @@ class qb
     private $_joins = array();
     public $limit = 100;
     public $limit_offset = -1;
+
+	public static $engine = qb::MYSQL;
     public static $default_limit = 100;
 
     public function __construct()
