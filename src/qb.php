@@ -46,6 +46,9 @@ class qb
 
     public function table($table_name)
     {
+        if ($table_name == null) {
+            return $this->_table_names[0];
+        }
         $this->_table_names[] = $table_name;
 
         return $this;
@@ -233,7 +236,7 @@ class qb
         }
         $updates = array();
         for ($d = 0, $m = count($this->_write_fields); $d < $m; ++$d) {
-            $t = $this->_write_fields[$d].'=';
+            $t = '`' . $this->_write_fields[$d].'`=';
             switch ($this->_write_field_types[$d]) {
             case 0:
               $t .= "'".$this->_write_values[$d]."'";
