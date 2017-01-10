@@ -40,18 +40,24 @@ If you do not want to short usage you may use like;
 ```
 $qb = new \ahmetertem\qb();
 ```
+> **Not**: If you do not use with `use` keyword ***you must*** enter long namespace each time.
+>
+> *See: [or](#or)* section
+---
 
 ## Support
 
 If you need help using **query_builder**, or have found a bug, please create an issue on the <a href="https://github.com/ahmetertem/query_builder/issues">GitHub repo</a>.
 
-
+---
 ## Configuration
 
 You may set some (*1 for now*) configuration statically.
 
 
-### $default_limit = 100 ###
+### $default_limit
+
+Default = 100
 
 Default limit is for to the setting default [getSelect](!Index/getSelect), [getUpdate](!Index/getUpdate) and [getDelete](!Index/getDelete) limit.
 
@@ -60,7 +66,7 @@ Default limit is for to the setting default [getSelect](!Index/getSelect), [getU
 ```
 qb::$default_limit = 250;
 ```
-
+---
 ## Examples
 Writing `select` query is very simple with **qb**. You just need to create and object and give parameters.
 
