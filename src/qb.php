@@ -7,7 +7,11 @@ namespace ahmetertem;
  */
 class qb
 {
-	const DRIVER_MYSQL = 0;
+    const DRIVER_MYSQL = 0;
+    const INNER_JOIN = 0;
+    const LEFT_JOIN = 1;
+    const RIGHT_JOIN = 2;
+    const FULL_JOIN = 3;
 
     private $_conditions = array();
     private $_table_names = array();
@@ -18,10 +22,11 @@ class qb
     private $_order_fields = array();
     private $_group_fields = array();
     private $_joins = array();
+
     public $limit = 100;
     public $limit_offset = -1;
 
-	public static $engine = qb::MYSQL;
+    public static $engine = qb::MYSQL;
     public static $default_limit = 100;
 
     public function __construct()
@@ -150,13 +155,6 @@ class qb
         return $this;
     }
 
-    public function join($table_name, $on, $join_type = null)
-    {
-        $this->_joins[] = array('table' => $table_name, 'on' => $on, 'type' => $join_type);
-
-        return $this;
-    }
-
     public function getSelect()
     {
         if (count($this->_table_names) == 0) {
@@ -174,9 +172,9 @@ class qb
         //
         // joins
         //
-        $joins = null;
-        foreach ($this->_joins as $join) {
-            $joins .= $join['type'].' JOIN '.$join['table'].' on '.$join['on'].' ';
+        $joins = '';
+        if (count($this->_joins) > 0) {
+            $joins = implode(' ', $this->_joins);
         }
 
         //
@@ -296,5 +294,36 @@ class qb
         $string = sprintf('delete from %1$s %2$s %3$s', $table, $where, $limit);
 
         return $string;
+    }
+
+    public function join($string)
+    {
+        $this->_joins[] = $string;
+        
+        return $this;
+    }
+
+    public function getJoin($join_type = qb::INNER_JOIN)
+    {
+        if (count($this->_table_names) == 0) {
+            throw new \Exception('Specify at least 1 table name');
+        }
+        switch ($join_type) {
+                case qb::INNER_JOIN:
+                    $join_type_ = 'INNER JOIN';
+                    break;
+                case qb::LEFT_JOIN:
+                    $join_type_ = 'LEFT JOIN';
+                    break;
+                case qb::RIGHT_JOIN:
+                    $join_type_ = 'RIGHT JOIN';
+                    break;
+                case qb::FULL_JOIN:
+                    $join_type_ = 'FULL OUTER JOIN';
+                    break;
+            }
+        $table = $this->_table_names[0];
+        $where = count($this->_conditions) > 0 ? (' on ' . implode(' and ', $this->_conditions)) : null;
+        return sprintf(' %1$s %2$s %3$s ', $join_type_, $table, $where);
     }
 }
